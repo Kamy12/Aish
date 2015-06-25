@@ -1,0 +1,24 @@
+#!/bin/sh
+if [ -z "$1" ];then
+	echo 'exit=CTRL-D'
+	stty -echo;aish -;stty echo
+	exit 0
+fi
+type=-7
+for name in $@; do
+	case $name in
+		-s*|-7|-8|-n|-u) type=$name;;
+		-*)	echo "usage: ishcat [-{7|8|s|n|u}] [files ..]"
+			aish -v
+			exit 0;;
+		*)	arg="$arg $name";;
+	esac
+done
+if [ -n "$arg" ];then
+#	exec aish -o - $type $arg 2>/dev/null
+	TMPFILE=$HOME/aish$$.tmp
+	aish -o - $type $arg 2> $TMPFILE
+	cat $TMPFILE
+	rm -f $TMPFILE
+fi
+# aish 1.10 by H.Ogasawara(COR.)
